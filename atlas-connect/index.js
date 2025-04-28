@@ -1,20 +1,33 @@
 // This is a simple Express server that connects to a MongoDB Atlas database using Mongoose.
 // It listens on a specified port and responds with "Hello World!" when the root URL is accessed.
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
- 
+
 const app = express();
 const PORT = process.env.PORT || 3000;
-//middleware
-app.use(express.json());
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://meghrajparashar:meghraj@cluster0.yfhco00.mongodb.net/megh?retryWrites=true&w=majority";
 
-mongoose.connect(MONGODB_URI).then(console.log("mongodb succesfully connected")).catch((e)=>console.log("not connected"))
+// Middleware
+app.use(express.json());
+const MONGODB_URI = process.env.MONGODB_URI;
+// const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://meghrajparashar:meghraj@cluster0.yfhco00.mongodb.net/megh?retryWrites=true&w=majority";
+
+mongoose.connect(MONGODB_URI)
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch((e) => console.log("Connection failed:", e));
 
 
 const student_schema= mongoose.Schema({
-  name:String,
-  age:Number,
+  name:{
+    type:String,
+    required:true,
+    unique:true
+  },
+  age:{
+    type:Number,
+    min:0,
+    max:50
+  },
   luck:Number
 })
 
@@ -22,12 +35,16 @@ const student_schema= mongoose.Schema({
 const student_model = new mongoose.model("student",student_schema)
 
 async function crate_student (name){
+  try{
   const student= new student_model({name:name,
     age:20,
     luck:100
   })
   const result = await student.save();
-  console.log("collection is made and documnet is saved at mongodb",result)
+  console.log("collection is made and documnet is saved at mongodb",result)}
+  catch(e){
+    console.error("error in creating a student",e.message)
+  }
 }
 async function read_student() {
   const student =await student_model.find()
@@ -48,7 +65,7 @@ async function delete_student() {
 // delete_student()
 // update_student('680e02a11427e89f0945ad12')
 // read_student()
-crate_student("ghansyam")
+crate_student("ragav")
 
 
 
