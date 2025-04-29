@@ -1,20 +1,14 @@
 // This is a simple Express server that connects to a MongoDB Atlas database using Mongoose.
 // It listens on a specified port and responds with "Hello World!" when the root URL is accessed.
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-
+ 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Middleware
+//middleware
 app.use(express.json());
-const MONGODB_URI = process.env.MONGODB_URI;
-// const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://meghrajparashar:meghraj@cluster0.yfhco00.mongodb.net/megh?retryWrites=true&w=majority";
-
-mongoose.connect(MONGODB_URI)
-  .then(() => console.log("MongoDB successfully connected"))
-  .catch((e) => console.log("Connection failed:", e));
+const MONGODB_URI = process.env.MONGODB_URI || "mongodb+srv://meghrajparashar:meghraj@cluster0.yfhco00.mongodb.net/megh?retryWrites=true&w=majority";
+mongoose.connect(MONGODB_URI).then(console.log("mongodb succesfully connected")).catch((e)=>console.log("not connected"))
 
 
 const student_schema= mongoose.Schema({
